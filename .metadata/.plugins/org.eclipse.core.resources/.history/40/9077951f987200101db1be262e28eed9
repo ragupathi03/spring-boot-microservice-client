@@ -1,0 +1,7 @@
+package com.controller;
+
+@RestController
+@RequestMapping("/api/consumer")
+public class MicroClientServiceController {
+
+}

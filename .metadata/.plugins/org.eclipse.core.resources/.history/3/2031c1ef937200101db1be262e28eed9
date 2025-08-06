@@ -1,0 +1,6 @@
+package com.feignclientservice;
+
+@FeignClient(name = "user-service", url = "http://localhost:8081/MICROSERVICE")
+public interface UserFeignClient {
+
+}

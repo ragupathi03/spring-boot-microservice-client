@@ -1,0 +1,53 @@
+package com.controller;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.entity.User;
+import com.feignclientservice.UserFeignClient;
+import com.repository.NewUserRepo;
+import com.responseentity.ApiResponse;
+
+@RestController
+@RequestMapping("/api/consumer")
+public class MicroClientServiceController {
+
+	@Autowired
+    private UserFeignClient userFeignClient;
+	
+	@Autowired
+	NewUserRepo newUserRepo;
+	
+	
+	@PostMapping("/getUsersAndSave")
+	public ResponseEntity<ApiResponse<List<User>>> fetchAndSaveUsers() {
+	    ApiResponse<List<User>> response = userFeignClient.getAllUsers();
+
+	    if (response != null && response.getData() != null) {
+	        List<User> entities = response.getData().stream().map(user -> {
+	            User entity = new User();
+	            entity.setUserName(user.getUserName());
+	            entity.setAddress(user.getAddress());
+	            return entity;
+	        }).collect(Collectors.toList());
+
+	        List<User> savedUsers = newUserRepo.saveAll(entities);
+
+	        ApiResponse<List<User>> apiResponse = new ApiResponse<>(true, "Users saved successfully", savedUsers);
+	        return ResponseEntity.ok(apiResponse);
+	    } else {
+	        ApiResponse<List<User>> apiResponse = new ApiResponse<>(false, "Invalid user data", null);
+	        return ResponseEntity.badRequest().body(apiResponse);
+	    }
+	}
+
+
+}

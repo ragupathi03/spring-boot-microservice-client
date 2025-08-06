@@ -1,0 +1,27 @@
+package com.entity;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
+@Table(name="USER_DETAILS")
+public class User {
+	
+	 @Id
+	 @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="USER_ID")
+	private Long userId;
+	
+	@Column(name="USER_NAME")
+	private String userName;
+	
+	@Column(name="AGE")
+	private String age;
+	
+	@Column(name="ADDRESS")
+	private String address;
+	
+	@Column(name="COUNTRY")
+	private String country;
+
+}
